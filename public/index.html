@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bored Ideas</title>
+  <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.2/dist/alpine.min.js" defer></script>
+  <link rel="stylesheet" href="build/tailwind.css">
+  <script src="https://use.fontawesome.com/2448c4ad20.js"></script>
+</head>
+
+<body class="bg-violet-50">
+  <div class="relative overflow-hidden">
+    <div class="relative pt-6 pb-16 sm:pb-24">
+      <main class="mt-16 mx-auto max-w-5xl px-4 sm:mt-24">
+        <!-- start:hero -->
+        <div class="text-center">
+          <h1 class="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
+            <span class="block xl:inline">Ideas to Stop </span>
+            <span class="block text-rose-600 xl:inline">Boredom</span>
+          </h1>
+          <p class="mt-3 max-w-md mx-auto text-base text-gray-500 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl">
+            Choose a category and find an activity to stop yourself from getting bored.
+          </p>
+        </div>
+        <!-- end:hero -->
+
+        <div class="max-w-lg mx-auto md:mt-8" x-data="ideaSearch()" x-init="fetchIdea()">
+          <!-- start:form -->
+          <form action="#" class="w-full flex flex-col py-4" @submit.prevent="fetchIdea()">
+            <div class="flex rounded-md shadow-sm">
+              <div class="relative flex items-stretch flex-grow focus-within:z-10">
+                  <select id="boredIdeaSearch" name="boredIdeaSearch" x-model="boredIdeaSearch"
+                    class="focus:ring-rose-500 focus:border-rose-500 block w-full rounded-none rounded-l-md pl-4 sm:text-sm border-gray-300">
+                    <option value="education">education</option>
+                    <option value="recreational">recreational</option>
+                    <option value="social">social</option>
+                    <option value="diy">diy</option>
+                    <option value="charity">charity</option>
+                    <option value="cooking">cooking</option>
+                    <option value="relaxation">relaxation</option>
+                    <option value="music">music</option>
+                    <option value="busywork">busywork</option>
+                  </select>
+              </div>
+              <button type="submit"
+                class="-ml-px relative inline-flex items-center space-x-2 px-4 py-2 border border-gray-300 text-sm font-medium rounded-r-md text-gray-700 bg-gray-50 hover:bg-gray-100 focus:outline-none focus:ring-1 focus:ring-rose-500 focus:border-rose-500"
+                :class="[ isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-rose-500 hover:text-white hover:border-rose-500' ]"
+                :disabled="isLoading">
+                <svg class="hidden md:block h-4 w-4 text-gray-400 group-hover:text-gray-200"
+                  xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                <span>Search</span>
+              </button>
+            </div>
+          </form>
+          <!-- end:form -->
+
+          <!-- start:result -->
+          <div class="mt-4 text-center">
+            <template x-if="idea">
+                <div class="my-8">
+                  <h3 class="text-gray-900 font-bold uppercase leading-none mb-2" x-text="idea.activity"></h3>
+                </div>
+                <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                  <div class="pt-6">
+                    <div class="flow-root bg-gray-50 rounded-lg px-6 pb-8">
+                      <div class="-mt-6">
+                        <div>
+                          <span class="inline-flex items-center justify-center p-3 bg-rose-500 rounded-md shadow-lg">
+                            <svg class="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                              stroke="currentColor" aria-hidden="true">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z" />
+                            </svg>
+                          </span>
+                        </div>
+                        <p class="mt-5 text-base text-gray-500">
+                          <h4 class="uppercase text-xs">Type</h4>
+                          <p x-text="idea.type"></p>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="pt-6">
+                    <div class="flow-root bg-gray-50 rounded-lg px-6 pb-8">
+                      <div class="-mt-6">
+                        <div>
+                          <span class="inline-flex items-center justify-center p-3 bg-rose-500 rounded-md shadow-lg">
+                            <svg class="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                              stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                            </svg>
+                          </span>
+                        </div>
+                        <p class="mt-5 text-base text-gray-500">
+                          <h4 class="uppercase text-xs">Participants</h4>
+                          <p x-text="idea.participants"></p>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="pt-6">
+                    <div class="flow-root bg-gray-50 rounded-lg px-6 pb-8">
+                      <div class="-mt-6">
+                        <div>
+                          <span class="inline-flex items-center justify-center p-3 bg-rose-500 rounded-md shadow-lg">
+                            <svg class="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                              stroke="currentColor" aria-hidden="true">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M14.121 15.536c-1.171 1.952-3.07 1.952-4.242 0-1.172-1.953-1.172-5.119 0-7.072 1.171-1.952 3.07-1.952 4.242 0M8 10.5h4m-4 3h4m9-1.5a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                          </span>
+                        </div>
+                        <p class="mt-5 text-base text-gray-500">
+                          <h4 class="uppercase text-xs">Price Index</h4>
+                          <p x-text="idea.price"></p>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </template>
+            <template x-if="!idea.activity">
+              <div class="flex items-center">
+                ERROR
+              </div>
+            </template>
+          </div>
+          <!-- end:result -->
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    function ideaSearch() {
+      return {
+        boredIdeaSearch: "",
+        idea: null,
+        isLoading: false,
+        fetchIdea() {
+          this.isLoading = true;
+          fetch(`http://www.boredapi.com/api/activity?type=${this.boredIdeaSearch}`)
+            .then((res) => res.json())
+            .then((data) => {
+              this.isLoading = false;
+              this.idea = data;
+            });
+        },
+      };
+    }
+  </script>
+</body>
+</html>
